@@ -2,23 +2,25 @@
 
 def minOperations(n):
     """
-    In a text file, there is a single character H. Your text editor can execute
-    only two operations in this file: Copy All and Paste. Given a number n,
-    write a method that calculates the fewest number of operations needed to
-    result in exactly n H characters in the file.
-
-    Returns an integer
-    If n is impossible to achieve, returns 0
+    step1 : checks if n is an integer
+    step2 : if n is not an integer return 0
+    step3 : if n is an integer operation set to zero
+    step4: initialize variable i to 2 which will be used in the loop
+    step5: checks if n can be divided by i.
+    step6: if n is not divisible by i, i is incremented by one
+    step7 : if n is divisible by i, n becomes the division of n and i
+    step 8 : operation is incremented by i and i is set to 1
+    step 9 : return operation when i becomes greater then n
     """
+
     if not isinstance(n, int):
         return 0
 
-    operation = 0
-    iteration = 2
-    while iteration <= n:
-        if not (n % iteration):
-            n = int(n / iteration)
-            operation += iteration
-            iteration = 1
-        iteration += 1
-    return operation
+    op = 0
+    i = 2
+    while(i <= n):
+        if not (n % i):
+            n = int(n/i)
+            op += i
+        i += 1
+    return op
