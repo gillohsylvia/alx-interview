@@ -1,6 +1,4 @@
 #!/usr/bin/python3
-
-def minOperations(n):
     """
     step1 : checks if n is an integer
     step2 : if n is not an integer return 0
@@ -13,6 +11,11 @@ def minOperations(n):
     step 9 : return operation when i becomes greater then n
     """
 
+def minOperations(n):
+    '''
+    alculates the fewest number of operations needed to
+    result in exactly n H characters
+    '''
     if n <= 1:  # If n is impossible to achieve
         return 0
     num_operations = 0  # number of operations required
