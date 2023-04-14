@@ -4,57 +4,43 @@
     [<date>] "GET /projects/260 HTTP/1.1"
     <status code> <file size>
 """
+
 import sys
 
 
-def process_logs(log_lines):
-    counter = 0
-    total_size = 0
-    status_code_counts = {
-        200: 0,
-        301: 0,
-        400: 0,
-        401: 0,
-        404: 0,
-        405: 0,
-        500: 0
-    }
-    for line in log_lines:
-        counter += 1
-        status_code, file_size = parse_log_line(line)
-        if status_code in status_code_counts:
-            status_code_counts[status_code] += 1
-            total_size += file_size
-        if counter % 10 == 0:
-            print_stats(total_size, status_code_counts)
-    print_stats(total_size, status_code_counts)
+def parse_log():
+    count = 0
+    fileSize = 0
+    pStatusCode = [200, 301, 400, 401, 403, 404, 405, 500]
+    statusCodeOccurence = {}
+
+    try:
+        for line in sys.stdin:
+            each = line.split()
+            if len(each) < 2:
+                return None
+            count += 1
+            fileSize += int(each[-1:][0])
+            statusCode = int(each[-2:][0])
+            if statusCode in pStatusCode:
+                if statusCode in statusCodeOccurence:
+                    statusCodeOccurence[statusCode] += 1
+                else:
+                    statusCodeOccurence[statusCode] = 1
+
+            if count == 10:
+                count = 0
+                print_error(fileSize, statusCodeOccurence)
+    except KeyboardInterrupt:
+        print_error(fileSize, statusCodeOccurence)
+        raise
 
 
-def parse_log_line(line):
-    """ pass a line with a format:
-      <IP Address> - [<date>] "GET /projects/260 HTTP/1.1" <status code>
-    <file size>
-    if the line is not with the above format returns None
-    """
-    fields = line.split()
-    status_code = int(fields[-2])
-    file_size = int(fields[-1])
-    return status_code, file_size
-
-
-def print_stats(total_size, status_code_counts):
-    """
-    prints the status
-    """
-    print("File size: {}".format(total_size))
-    for code, count in status_code_counts.items():
-        if count != 0:
-            print("{}: {}".format(code, count))
+def print_error(fileSize, statusCodeOccurence):
+    print('File size: {}'.format(fileSize))
+    for items in sorted(statusCodeOccurence.items()):
+        print('{}: {}'.format(items[0], items[1]))
 
 
 if __name__ == '__main__':
-    stdin = sys.stdin
-    try:
-        process_logs(stdin)
-    except KeyboardInterrupt as error:
-        process_logs(stdin)
+    parse_log()
