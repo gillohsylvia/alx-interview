@@ -1,4 +1,8 @@
 #!/usr/bin/python3
+
+import sys
+from collections import OrderedDict
+
 """
 My pseudocode
 * read from the stdin for line in stdin.
@@ -24,34 +28,30 @@ def parseLogs():
     Raises:
         KeyboardInterrupt (Exception): handles this exception and raises it
     """
-    stdin = __import__('sys').stdin
-    lineNumber = 0
-    fileSize = 0
-    statusCodes = {}
-    codes = ('200', '301', '400', '401', '403', '404', '405', '500')
-    try:
-        for line in stdin:
-            lineNumber += 1
-            line = line.split()
-            try:
-                fileSize += int(line[-1])
-                if line[-2] in codes:
-                    try:
-                        statusCodes[line[-2]] += 1
-                    except KeyError:
-                        statusCodes[line[-2]] = 1
-            except (IndexError, ValueError):
-                pass
-            if lineNumber == 10:
-                report(fileSize, statusCodes)
-                lineNumber = 0
-        report(fileSize, statusCodes)
-    except KeyboardInterrupt as e:
-        report(fileSize, statusCodes)
-        raise
+count = 0
+    global file_size
+    global status_dict
+    file_size = 0
+    status_dict = {200: 0,
+                   301: 0,
+                   400: 0,
+                   401: 0,
+                   403: 0,
+                   404: 0,
+                   405: 0,
+                   500: 0}
+
+    for line in sys.stdin:
+        logs = line.split(" ")
+        if int(logs[-2]) in status_dict.keys() and len(logs) == 9:
+            file_size += int(logs[-1])
+            status_dict[int(logs[-2])] += 1
+        if count % 10 == 0 and count != 0:
+            print_output(status_dict, file_size)
+        count += 1
 
 
-def report(fileSize, statusCodes):
+def print_output(status_dict, file_size):
     """
     Prints generated report to standard output
     Args:
@@ -59,10 +59,13 @@ def report(fileSize, statusCodes):
         every 10 successfully read line
         statusCodes (dict): The dictionary of status codes and counts
     """
-    print("File size: {}".format(fileSize))
-    for key, value in sorted(statusCodes.items()):
-        print("{}: {}".format(key, value))
+    print("File size: {}".format(file_size))
+    for k, v in status_dict.items():
+        if v > 0:
+            print("{}: {}".format(k, v))
 
 
-if __name__ == '__main__':
-    parseLogs()
+try:
+    parse_logs()
+except KeyboardInterrupt:
+    print_output(status_dict, file_size)
