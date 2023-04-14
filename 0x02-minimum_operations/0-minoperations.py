@@ -13,14 +13,19 @@ def minOperations(n):
     step 9 : return operation when i becomes greater then n
     """
 
-    if not isinstance(n, int):
-        return 0
+    if n == 1:
+        return 0   # This returns 0 if theres only 1 H.
+    pf = 2  # Here we start with the lowest prime factor 2
+    op = 0  # op Gets the number of operations
 
-    op = 0
-    i = 2
-    while(i <= n):
-        if not (n % i):
-            n = int(n/i)
-            op += i
-        i += 1
+    while pf * pf <= n:
+        if n % pf == 0:  # This checks for all the prime factors
+            op += pf  # adds the factor to operations
+            n //= pf  # This divides pf to reduce n for the next iteratio
+        else:
+            pf += 1   # if the number is not a factor, we increment.
+    if n > 1:   # Adds the remaining prime factors of n
+        op += n
     return op
+
+    
