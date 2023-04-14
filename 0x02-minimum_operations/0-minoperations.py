@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-    """
+"""
     step1 : checks if n is an integer
     step2 : if n is not an integer return 0
     step3 : if n is an integer operation set to zero
@@ -9,9 +9,9 @@
     step7 : if n is divisible by i, n becomes the division of n and i
     step 8 : operation is incremented by i and i is set to 1
     step 9 : return operation when i becomes greater then n
-    """
+ """
 
-def minOperations(n):
+ def minOperations(n):
     '''
     alculates the fewest number of operations needed to
     result in exactly n H characters
