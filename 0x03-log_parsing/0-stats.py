@@ -11,42 +11,56 @@
 9. Print the file size.
 10. If either the key or the value is missing, continue to the next line; otherwise, print the corresponding status code."
 """
-import sys
 
-
-def parse_log():
-    count = 0
+def parseLogs():
+    """
+    Reads logs from standard input and generates reports.
+    Reports:
+        * Prints the log size after reading every 10 lines and at KeyboardInterrupt.
+    Raises:
+        KeyboardInterrupt (Exception): Handles this exception and raises it.
+    """
+    lineNumber = 0
     fileSize = 0
-    pStatusCode = [200, 301, 400, 401, 403, 404, 405, 500]
-    statusCodeOccurence = {}
+    statusCodes = {}
+    codes = ('200', '301', '400', '401', '403', '404', '405', '500')
 
     try:
-        for line in sys.stdin:
-            each = line.split()
-            if len(each) < 2:
-                return None
-            count += 1
-            fileSize += int(each[-1:][0])
-            statusCode = int(each[-2:][0])
-            if statusCode in pStatusCode:
-                if statusCode in statusCodeOccurence:
-                    statusCodeOccurence[statusCode] += 1
-                else:
-                    statusCodeOccurence[statusCode] = 1
+        for line in iter(input, ''):
+            lineNumber += 1
+            log_parts = line.split()
+            if len(log_parts) < 3:
+                continue
 
-            if count == 10:
-                count = 0
-                print_error(fileSize, statusCodeOccurence)
+            try:
+                fileSize += int(log_parts[-1])
+                status_code = log_parts[-2]
+                if status_code in codes:
+                    statusCodes[status_code] = statusCodes.get(status_code, 0) + 1
+            except (IndexError, ValueError):
+                continue
+
+            if lineNumber == 10:
+                report(fileSize, statusCodes)
+                lineNumber = 0
+
+        report(fileSize, statusCodes)
+
     except KeyboardInterrupt:
-        print_error(fileSize, statusCodeOccurence)
+        report(fileSize, statusCodes)
         raise
 
-
-def print_error(fileSize, statusCodeOccurence):
-    print('File size: {}'.format(fileSize))
-    for items in sorted(statusCodeOccurence.items()):
-        print('{}: {}'.format(items[0], items[1]))
-
+def report(fileSize, statusCodes):
+    """
+    Prints the generated report to standard output.
+    Args:
+        fileSize (int): The total log size after every 10 successfully read lines.
+        statusCodes (dict): The dictionary of status codes and their counts.
+    """
+    print("File size: {}".format(fileSize))
+    for key, value in sorted(statusCodes.items()):
+        print("{}: {}".format(key, value))
 
 if __name__ == '__main__':
-    parse_log()
+    parseLogs()
+
