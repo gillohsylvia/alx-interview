@@ -1,10 +1,16 @@
 #!/usr/bin/python3
-""" reads stdin line by line and compute metrics
-   input format :  <IP Address> -
-    [<date>] "GET /projects/260 HTTP/1.1"
-    <status code> <file size>
 """
-
+1. Read input from the command line, line by line.
+2. Verify the format of each line; if it doesn't match the expected format, move on to the next line.
+3. Initialize a counter variable and increment it for every valid line.
+4. Check if the counter reaches a value of 10; if it does, perform calculations.
+5. Set up a dictionary to store status codes encountered during processing.
+6. Create a variable to keep track of the file size.
+7. With each line read, check if the corresponding key is present in the dictionary.
+8. Update the file size accordingly.
+9. Print the file size.
+10. If either the key or the value is missing, continue to the next line; otherwise, print the corresponding status code."
+"""
 import sys
 
 
